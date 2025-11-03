@@ -28,8 +28,10 @@ export default function ArcelorMittalSignature() {
     removeBackground: true,
   });
 
+  const [originalImage, setOriginalImage] = useState<string>("");
+
   useEffect(() => {
-    fetch("/images/arcelormittal-logo.svg")
+    fetch("/images/arcelormittal-logo.png")
       .then((response) => response.blob())
       .then((blob) => {
         const reader = new FileReader();
@@ -112,6 +114,7 @@ export default function ArcelorMittalSignature() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const dataUrl = reader.result as string;
+      setOriginalImage(dataUrl);
       if (!data.gradient) {
         alert("Gradient image is not loaded yet. Please try again later.");
         return;
@@ -130,6 +133,21 @@ export default function ArcelorMittalSignature() {
     };
     reader.readAsDataURL(file);
   };
+
+  // Re-process image when removeBackground option changes
+  useEffect(() => {
+    if (originalImage && data.gradient) {
+      combineImagesWithGradient(
+        data.gradient,
+        originalImage,
+        options.removeBackground
+      ).then(combinedUrl => {
+        set("image", combinedUrl);
+      }).catch(error => {
+        console.error("Error reprocessing image:", error);
+      });
+    }
+  }, [options.removeBackground, originalImage, data.gradient]);
 
   const buildSignatureHtml = () => {
     return `${options.showNotes ? `<p style="color:#0C0C0C;font-family:Arial;font-size:12px;line-height:130%">
@@ -246,7 +264,7 @@ export default function ArcelorMittalSignature() {
             
             <div className="flex items-center justify-between">
               <label htmlFor="notes" className="text-sm font-medium">
-                Include Notes Section
+                Include Default Text
               </label>
               <Switch.Root
                 id="notes"

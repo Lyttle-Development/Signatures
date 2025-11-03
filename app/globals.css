@@ -38,6 +38,8 @@ body {
   cursor: pointer;
   position: relative;
   transition: all 0.2s;
+  overflow: auto;
+  max-height: 600px;
 }
 
 .signature-container:hover {
@@ -48,4 +50,15 @@ body {
 .signature-container.copying {
   background-color: rgba(34, 197, 94, 0.1);
   border-color: #22c55e;
+}
+
+/* Ensure signature preview content is contained */
+.signature-preview table {
+  max-width: 100%;
+  table-layout: auto;
+}
+
+.signature-preview img {
+  max-width: 100%;
+  height: auto;
 }

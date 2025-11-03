@@ -113,29 +113,36 @@ export async function combineImagesWithGradient(
   const offsetX = (targetWidth - newWidth) / 2;
   const offsetY = (targetHeight - newHeight) / 2;
 
+  pCtx.drawImage(profileImg, offsetX, offsetY, newWidth, newHeight);
+  
   if (removeBackground) {
     // Simple background removal using brightness threshold
     // This is a basic implementation - for production, consider using an API like remove.bg
-    pCtx.drawImage(profileImg, offsetX, offsetY, newWidth, newHeight);
     const imageData = pCtx.getImageData(0, 0, targetWidth, targetHeight);
     const data = imageData.data;
 
     // Threshold-based background removal with configurable brightness
+    // Also check for color similarity to improve detection
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
       const g = data[i + 1];
       const b = data[i + 2];
       
-      // If pixel is close to white or very light, make it transparent
+      // Calculate brightness
       const brightness = (r + g + b) / 3;
-      if (brightness > brightnessThreshold) {
-        data[i + 3] = 0; // Set alpha to 0 (transparent)
+      
+      // Check if pixel is close to white/light or if colors are very similar (gray-ish background)
+      const colorDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(b - r));
+      
+      // If pixel is bright AND colors are similar (not much variation), it's likely background
+      if (brightness > brightnessThreshold || (brightness > 180 && colorDiff < 30)) {
+        // Fade out based on how close to white it is
+        const alpha = Math.max(0, (brightnessThreshold - brightness) / brightnessThreshold * 255);
+        data[i + 3] = Math.min(data[i + 3], alpha);
       }
     }
     
     pCtx.putImageData(imageData, 0, 0);
-  } else {
-    pCtx.drawImage(profileImg, offsetX, offsetY, newWidth, newHeight);
   }
 
   // Draw the processed profile image onto the final canvas

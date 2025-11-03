@@ -28,8 +28,10 @@ export default function LyttleDevelopmentSignature() {
     applyGrayscale: true,
   });
 
+  const [originalImage, setOriginalImage] = useState<string>("");
+
   useEffect(() => {
-    fetch("/images/ld-logo.svg")
+    fetch("/images/ld-logo.png")
       .then((response) => response.blob())
       .then((blob) => {
         const reader = new FileReader();
@@ -96,6 +98,7 @@ export default function LyttleDevelopmentSignature() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const dataUrl = reader.result as string;
+      setOriginalImage(dataUrl);
       try {
         const processedImage = await processImageWithCircularMask(
           dataUrl,
@@ -110,6 +113,21 @@ export default function LyttleDevelopmentSignature() {
     };
     reader.readAsDataURL(file);
   };
+
+  // Re-process image when grayscale option changes
+  useEffect(() => {
+    if (originalImage) {
+      processImageWithCircularMask(
+        originalImage,
+        121,
+        options.applyGrayscale
+      ).then(processedImage => {
+        set("image", processedImage);
+      }).catch(error => {
+        console.error("Error reprocessing image:", error);
+      });
+    }
+  }, [options.applyGrayscale, originalImage]);
 
   const buildSignatureHtml = () => {
     return `${options.showNotes ? `<p style="color:#0C0C0C;font-family:Arial;font-size:12px;line-height:130%">
@@ -229,7 +247,7 @@ export default function LyttleDevelopmentSignature() {
             
             <div className="flex items-center justify-between">
               <label htmlFor="notes" className="text-sm font-medium">
-                Include Notes Section
+                Include Default Text
               </label>
               <Switch.Root
                 id="notes"

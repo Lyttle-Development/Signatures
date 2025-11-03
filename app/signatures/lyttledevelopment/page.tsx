@@ -9,9 +9,10 @@ import { safeParseFieldString } from "@/lib/parse";
 import { processImageWithCircularMask } from "@/lib/image-processing";
 import * as Switch from "@radix-ui/react-switch";
 import { CopyBox } from "@/components/CopyBox";
+import { loadSignatureData, saveSignatureData, clearSignatureData } from "@/lib/storage";
 
 export default function LyttleDevelopmentSignature() {
-  const [data, setData] = useState({
+  const defaultData = {
     firstName: "",
     lastName: "",
     position: "",
@@ -20,7 +21,9 @@ export default function LyttleDevelopmentSignature() {
     addressLine2: "9180 Lokeren, België",
     image: "",
     logo: "",
-  });
+  };
+
+  const [data, setData] = useState(defaultData);
 
   const [options, setOptions] = useState({
     showNotes: true,
@@ -30,7 +33,21 @@ export default function LyttleDevelopmentSignature() {
 
   const [originalImage, setOriginalImage] = useState<string>("");
 
+  // Load saved data from localStorage on mount
   useEffect(() => {
+    const savedData = loadSignatureData();
+    if (savedData) {
+      setData((prev) => ({
+        ...prev,
+        firstName: savedData.firstName,
+        lastName: savedData.lastName,
+        position: savedData.position || defaultData.position,
+        telephone: savedData.telephone || defaultData.telephone,
+        addressLine1: savedData.addressLine1 || defaultData.addressLine1,
+        addressLine2: savedData.addressLine2 || defaultData.addressLine2,
+      }));
+    }
+
     fetch("/images/lyttledevelopment/lyttledevelopment-logo.png")
       .then((response) => response.blob())
       .then((blob) => {
@@ -51,7 +68,30 @@ export default function LyttleDevelopmentSignature() {
   const signatureRef = React.useRef<HTMLDivElement>(null);
 
   const set = (key: string, value: string) => {
-    setData((prev) => ({ ...prev, [key]: value }));
+    setData((prev) => {
+      const newData = { ...prev, [key]: value };
+      // Save to localStorage (excluding image and logo)
+      if (!['image', 'logo'].includes(key)) {
+        saveSignatureData({
+          firstName: newData.firstName,
+          lastName: newData.lastName,
+          position: newData.position,
+          telephone: newData.telephone,
+          addressLine1: newData.addressLine1,
+          addressLine2: newData.addressLine2,
+        });
+      }
+      return newData;
+    });
+  };
+
+  const handleClearData = () => {
+    clearSignatureData();
+    setData({
+      ...defaultData,
+      logo: data.logo,
+      image: "",
+    });
   };
 
   const isValid = () => {
@@ -227,6 +267,15 @@ export default function LyttleDevelopmentSignature() {
             value={data.addressLine2}
           />
           <Field label="Profile Image" type={FormOptionType.FILE} onFile={getBinary} />
+
+          <div className="mt-6 mb-4">
+            <button
+              onClick={handleClearData}
+              className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            >
+              Clear Saved Data & Use Defaults
+            </button>
+          </div>
 
           <div className="mt-6 space-y-4">
             <h3 className="text-lg font-semibold">Options</h3>

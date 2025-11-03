@@ -13,7 +13,8 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
 export async function processImageWithCircularMask(
   dataUrl: string,
   size: number = 121,
-  applyGrayscale: boolean = true
+  applyGrayscale: boolean = true,
+  grayscaleAmount: number = 100
 ): Promise<string> {
   const imgElement = await loadImage(dataUrl);
   
@@ -36,7 +37,7 @@ export async function processImageWithCircularMask(
 
   // Apply grayscale filter if needed
   if (applyGrayscale) {
-    ctx.filter = "grayscale(100%)";
+    ctx.filter = `grayscale(${grayscaleAmount}%)`;
   }
 
   // Calculate scale for "object-fit: cover"
@@ -68,7 +69,8 @@ export async function processImageWithCircularMask(
 export async function combineImagesWithGradient(
   gradientUrl: string,
   profileUrl: string,
-  removeBackground: boolean = false
+  removeBackground: boolean = false,
+  brightnessThreshold: number = 200
 ): Promise<string> {
   const [gradientImg, profileImg] = await Promise.all([
     loadImage(gradientUrl),
@@ -112,13 +114,13 @@ export async function combineImagesWithGradient(
   const offsetY = (targetHeight - newHeight) / 2;
 
   if (removeBackground) {
-    // Simple background removal using edge detection
-    // This is a basic implementation - for production, consider using an API
+    // Simple background removal using brightness threshold
+    // This is a basic implementation - for production, consider using an API like remove.bg
     pCtx.drawImage(profileImg, offsetX, offsetY, newWidth, newHeight);
     const imageData = pCtx.getImageData(0, 0, targetWidth, targetHeight);
     const data = imageData.data;
 
-    // Simple threshold-based background removal
+    // Threshold-based background removal with configurable brightness
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
       const g = data[i + 1];
@@ -126,7 +128,7 @@ export async function combineImagesWithGradient(
       
       // If pixel is close to white or very light, make it transparent
       const brightness = (r + g + b) / 3;
-      if (brightness > 200) {
+      if (brightness > brightnessThreshold) {
         data[i + 3] = 0; // Set alpha to 0 (transparent)
       }
     }

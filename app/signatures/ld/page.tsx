@@ -46,7 +46,7 @@ export default function LyttleDevelopmentSignature() {
       });
   }, []);
 
-  const signatureRef = React.createRef<HTMLDivElement>();
+  const signatureRef = React.useRef<HTMLDivElement>(null);
 
   const set = (key: string, value: string) => {
     setData((prev) => ({ ...prev, [key]: value }));

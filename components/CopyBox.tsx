@@ -14,6 +14,12 @@ export function CopyBox({ signatureHtml, onCopy, disabled = false }: CopyBoxProp
   const handleCopy = async () => {
     if (disabled) return;
 
+    // Check if Clipboard API is available
+    if (!navigator.clipboard || !navigator.clipboard.write) {
+      alert("Clipboard API is not supported in this browser. Please use a modern browser with HTTPS.");
+      return;
+    }
+
     try {
       // Use the modern Clipboard API to copy HTML
       await navigator.clipboard.write([
@@ -31,7 +37,7 @@ export function CopyBox({ signatureHtml, onCopy, disabled = false }: CopyBoxProp
       }, 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
-      alert("Failed to copy signature. Please try again.");
+      alert("Failed to copy signature. Please try again or ensure you're using HTTPS.");
     }
   };
 

@@ -9,7 +9,7 @@ import { safeParseFieldString } from "@/lib/parse";
 import { processImageWithCircularMask } from "@/lib/image-processing";
 import * as Switch from "@radix-ui/react-switch";
 import { CopyBox } from "@/components/CopyBox";
-import { loadSignatureData, saveSignatureData, clearSignatureData } from "@/lib/storage";
+import { loadSignatureData, saveSignatureData, clearSignatureData, saveImageData, loadImageData } from "@/lib/storage";
 
 export default function LyttleDevelopmentSignature() {
   const defaultData = {
@@ -45,6 +45,15 @@ export default function LyttleDevelopmentSignature() {
         telephone: savedData.telephone || defaultData.telephone,
         addressLine1: savedData.addressLine1 || defaultData.addressLine1,
         addressLine2: savedData.addressLine2 || defaultData.addressLine2,
+      }));
+    }
+
+    // Load saved image if exists
+    const savedImage = loadImageData();
+    if (savedImage) {
+      setData((prev) => ({
+        ...prev,
+        image: savedImage,
       }));
     }
 
@@ -146,6 +155,8 @@ export default function LyttleDevelopmentSignature() {
           options.applyGrayscale
         );
         set("image", processedImage);
+        // Save the processed image to localStorage
+        saveImageData(processedImage);
       } catch (error) {
         console.error("Error processing image:", error);
         alert("Failed to process image. Please try again.");
@@ -163,6 +174,8 @@ export default function LyttleDevelopmentSignature() {
         options.applyGrayscale
       ).then(processedImage => {
         set("image", processedImage);
+        // Save the reprocessed image to localStorage
+        saveImageData(processedImage);
       }).catch(error => {
         console.error("Error reprocessing image:", error);
       });

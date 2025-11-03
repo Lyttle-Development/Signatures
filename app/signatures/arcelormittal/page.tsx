@@ -9,7 +9,7 @@ import { safeParseFieldString } from "@/lib/parse";
 import { combineImagesWithGradient } from "@/lib/image-processing";
 import * as Switch from "@radix-ui/react-switch";
 import { CopyBox } from "@/components/CopyBox";
-import { loadSignatureData, saveSignatureData, clearSignatureData } from "@/lib/storage";
+import { loadSignatureData, saveSignatureData, clearSignatureData, saveImageData, loadImageData } from "@/lib/storage";
 
 export default function ArcelorMittalSignature() {
   const defaultData = {
@@ -19,6 +19,7 @@ export default function ArcelorMittalSignature() {
     telephone: "+32 (0)93 47 XX XX",
     addressLine1: "John Kennedylaan 51, B-9042 Gent",
     addressLine2: "(Locatie, bureau xx)",
+    psMessage: "",
     image: "",
     logo: "",
     gradient: "",
@@ -42,6 +43,16 @@ export default function ArcelorMittalSignature() {
         telephone: savedData.telephone || defaultData.telephone,
         addressLine1: savedData.addressLine1 || defaultData.addressLine1,
         addressLine2: savedData.addressLine2 || defaultData.addressLine2,
+        psMessage: savedData.psMessage || defaultData.psMessage,
+      }));
+    }
+
+    // Load saved image if exists
+    const savedImage = loadImageData();
+    if (savedImage) {
+      setData((prev) => ({
+        ...prev,
+        image: savedImage,
       }));
     }
 
@@ -92,6 +103,7 @@ export default function ArcelorMittalSignature() {
           telephone: newData.telephone,
           addressLine1: newData.addressLine1,
           addressLine2: newData.addressLine2,
+          psMessage: newData.psMessage,
         });
       }
       return newData;
@@ -163,6 +175,8 @@ export default function ArcelorMittalSignature() {
           false // Always use false since we're removing the background removal feature
         );
         set("image", combinedUrl);
+        // Save the processed image to localStorage
+        saveImageData(combinedUrl);
       } catch (error) {
         console.error("Error combining images:", error);
         alert("Failed to process image. Please try again.");
@@ -208,12 +222,9 @@ export default function ArcelorMittalSignature() {
                     Of <a href="?" style="color:#F25900;text-decoration:underline;">chat in Teams</a><br><br>
                     ${data.addressLine1}<br>
                     ${data.addressLine2}<br><br>
-                    <span style="font-size:10px;">
-                      PS: Gelieve uw IBO gerichte vragen voor Human Resources naar
-                      <a href="mailto:hrdigitalisation@arcelormittal.com">hrdigitalisation@arcelormittal.com</a>
-                      te sturen & voor IBO vragen voor Progress Academy naar
-                      <a href="mailto:gen-pac-ibo@arcelormittal.com">gen-pac-ibo@arcelormittal.com</a> te sturen.
-                    </span>
+                    ${data.psMessage ? `<span style="font-size:10px;">
+                      ${data.psMessage}
+                    </span>` : ''}
                   </td>
                 </tr>
               </table>
@@ -264,6 +275,12 @@ export default function ArcelorMittalSignature() {
             label="Address Line 2"
             onChange={(e) => set("addressLine2", safeParseFieldString(e))}
             value={data.addressLine2}
+          />
+          <Field
+            label="PS Message (optional)"
+            type={FormOptionType.TEXTAREA}
+            onChange={(e) => set("psMessage", safeParseFieldString(e))}
+            value={data.psMessage}
           />
           <Field label="Profile Image" type={FormOptionType.FILE} onFile={getBinary} />
 

@@ -48,13 +48,22 @@ export default function LyttleDevelopmentSignature() {
       }));
     }
 
-    // Load saved image if exists
+    // Load saved original image if exists and process it
     const savedImage = loadImageData();
     if (savedImage) {
-      setData((prev) => ({
-        ...prev,
-        image: savedImage,
-      }));
+      setOriginalImage(savedImage);
+      processImageWithCircularMask(
+        savedImage,
+        121,
+        options.applyGrayscale
+      ).then(processedImage => {
+        setData((prev) => ({
+          ...prev,
+          image: processedImage,
+        }));
+      }).catch(error => {
+        console.error("Error processing saved image:", error);
+      });
     }
 
     fetch("/images/lyttledevelopment/lyttledevelopment-logo.png")
@@ -147,6 +156,8 @@ export default function LyttleDevelopmentSignature() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const dataUrl = reader.result as string;
+      // Save the original uploaded image to localStorage
+      saveImageData(dataUrl);
       setOriginalImage(dataUrl);
       try {
         const processedImage = await processImageWithCircularMask(
@@ -155,8 +166,6 @@ export default function LyttleDevelopmentSignature() {
           options.applyGrayscale
         );
         set("image", processedImage);
-        // Save the processed image to localStorage
-        saveImageData(processedImage);
       } catch (error) {
         console.error("Error processing image:", error);
         alert("Failed to process image. Please try again.");
@@ -174,8 +183,6 @@ export default function LyttleDevelopmentSignature() {
         options.applyGrayscale
       ).then(processedImage => {
         set("image", processedImage);
-        // Save the reprocessed image to localStorage
-        saveImageData(processedImage);
       }).catch(error => {
         console.error("Error reprocessing image:", error);
       });

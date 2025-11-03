@@ -47,15 +47,6 @@ export default function ArcelorMittalSignature() {
       }));
     }
 
-    // Load saved image if exists
-    const savedImage = loadImageData();
-    if (savedImage) {
-      setData((prev) => ({
-        ...prev,
-        image: savedImage,
-      }));
-    }
-
     fetch("/images/arcelormittal/arcelormittal-logo.png")
       .then((response) => response.blob())
       .then((blob) => {
@@ -77,10 +68,28 @@ export default function ArcelorMittalSignature() {
       .then((blob) => {
         const reader = new FileReader();
         reader.onloadend = () => {
+          const gradientDataUrl = reader.result as string;
           setData((prev) => ({
             ...prev,
-            gradient: reader.result as string,
+            gradient: gradientDataUrl,
           }));
+          
+          // Load saved original image and process it after gradient is loaded
+          const savedImage = loadImageData();
+          if (savedImage) {
+            combineImagesWithGradient(
+              gradientDataUrl,
+              savedImage,
+              false
+            ).then(combinedUrl => {
+              setData((prev) => ({
+                ...prev,
+                image: combinedUrl,
+              }));
+            }).catch(error => {
+              console.error("Error processing saved image:", error);
+            });
+          }
         };
         reader.readAsDataURL(blob);
       })
@@ -164,6 +173,8 @@ export default function ArcelorMittalSignature() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const dataUrl = reader.result as string;
+      // Save the original uploaded image to localStorage
+      saveImageData(dataUrl);
       if (!data.gradient) {
         alert("Gradient image is not loaded yet. Please try again later.");
         return;
@@ -175,8 +186,6 @@ export default function ArcelorMittalSignature() {
           false // Always use false since we're removing the background removal feature
         );
         set("image", combinedUrl);
-        // Save the processed image to localStorage
-        saveImageData(combinedUrl);
       } catch (error) {
         console.error("Error combining images:", error);
         alert("Failed to process image. Please try again.");

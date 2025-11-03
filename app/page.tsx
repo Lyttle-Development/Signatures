@@ -7,14 +7,14 @@ export default function Home() {
       id: "lyttledevelopment",
       name: "Lyttle Development",
       description: "Professional email signature for Lyttle Development team members",
-      href: "/signatures/lyttledevelopment",
+      href: "/lyttledevelopment",
       color: "from-indigo-500 to-purple-600",
     },
     {
       id: "arcelormittal",
       name: "ArcelorMittal",
       description: "Corporate email signature for ArcelorMittal employees",
-      href: "/signatures/arcelormittal",
+      href: "/arcelormittal",
       color: "from-orange-500 to-red-600",
     },
   ];

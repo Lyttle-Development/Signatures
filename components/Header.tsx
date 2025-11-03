@@ -12,19 +12,13 @@ export function Header() {
           </Link>
           <div className="flex gap-6">
             <Link
-              href="/"
-              className="hover:text-gray-300 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/signatures/lyttledevelopment"
+              href="/lyttledevelopment"
               className="hover:text-gray-300 transition-colors"
             >
               Lyttle Development
             </Link>
             <Link
-              href="/signatures/arcelormittal"
+              href="/arcelormittal"
               className="hover:text-gray-300 transition-colors"
             >
               ArcelorMittal

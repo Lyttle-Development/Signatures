@@ -8,23 +8,23 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <nav className="flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity">
-            Lyttle Development
+            Signatures
           </Link>
           <div className="flex gap-6">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="hover:text-gray-300 transition-colors"
             >
               Home
             </Link>
-            <Link 
-              href="/signatures/ld" 
+            <Link
+              href="/signatures/lyttledevelopment"
               className="hover:text-gray-300 transition-colors"
             >
-              LD Signature
+              Lyttle Development
             </Link>
-            <Link 
-              href="/signatures/arcelormittal" 
+            <Link
+              href="/signatures/arcelormittal"
               className="hover:text-gray-300 transition-colors"
             >
               ArcelorMittal

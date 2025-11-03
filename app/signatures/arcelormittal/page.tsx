@@ -12,12 +12,12 @@ import { CopyBox } from "@/components/CopyBox";
 
 export default function ArcelorMittalSignature() {
   const [data, setData] = useState({
-    firstName: "Kilian",
-    lastName: "De Bock",
-    position: "IBO Assistent | Human Resources & Progress Academy",
-    telephone: "+32 (0)93 47 49 35",
+    firstName: "",
+    lastName: "",
+    position: "Functie | Afdeling",
+    telephone: "+32 (0)93 47 XX XX",
     addressLine1: "John Kennedylaan 51, B-9042 Gent",
-    addressLine2: "(Hoofdgebouw, bureau 1510)",
+    addressLine2: "(Locatie, bureau xx)",
     image: "",
     logo: "",
     gradient: "",
@@ -28,7 +28,7 @@ export default function ArcelorMittalSignature() {
   });
 
   useEffect(() => {
-    fetch("/images/arcelormittal-logo.png")
+    fetch("/images/arcelormittal/arcelormittal-logo.png")
       .then((response) => response.blob())
       .then((blob) => {
         const reader = new FileReader();
@@ -185,7 +185,7 @@ export default function ArcelorMittalSignature() {
   return (
     <Container>
       <h1 className="text-3xl font-bold text-[#100429] mb-6">ArcelorMittal Signature</h1>
-      
+
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
@@ -225,10 +225,10 @@ export default function ArcelorMittalSignature() {
             value={data.addressLine2}
           />
           <Field label="Profile Image" type={FormOptionType.FILE} onFile={getBinary} />
-          
+
           <div className="mt-6 space-y-4">
             <h3 className="text-lg font-semibold">Options</h3>
-            
+
             <div className="flex items-center justify-between">
               <label htmlFor="notes" className="text-sm font-medium">
                 Include Default Text
@@ -244,7 +244,7 @@ export default function ArcelorMittalSignature() {
             </div>
           </div>
         </div>
-        
+
         <div>
           <h2 className="text-xl font-semibold mb-4">Preview</h2>
           <div className={styles.signature_container}>
@@ -260,7 +260,7 @@ export default function ArcelorMittalSignature() {
               </p>
             )}
           </div>
-          
+
           <CopyBox
             signatureHtml={buildSignatureHtml()}
             onCopy={() => {

@@ -21,7 +21,7 @@ export default function LyttleDevelopmentSignature() {
     image: "",
     logo: "",
   });
-  
+
   const [options, setOptions] = useState({
     showNotes: true,
     showBranding: true,
@@ -31,7 +31,7 @@ export default function LyttleDevelopmentSignature() {
   const [originalImage, setOriginalImage] = useState<string>("");
 
   useEffect(() => {
-    fetch("/images/ld-logo.png")
+    fetch("/images/lyttledevelopment/lyttledevelopment-logo.png")
       .then((response) => response.blob())
       .then((blob) => {
         const reader = new FileReader();
@@ -187,7 +187,7 @@ export default function LyttleDevelopmentSignature() {
   return (
     <Container>
       <h1 className="text-3xl font-bold text-[#100429] mb-6">Lyttle Development Signature</h1>
-      
+
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
@@ -227,10 +227,10 @@ export default function LyttleDevelopmentSignature() {
             value={data.addressLine2}
           />
           <Field label="Profile Image" type={FormOptionType.FILE} onFile={getBinary} />
-          
+
           <div className="mt-6 space-y-4">
             <h3 className="text-lg font-semibold">Options</h3>
-            
+
             <div className="flex items-center justify-between">
               <label htmlFor="grayscale" className="text-sm font-medium">
                 Apply Grayscale to Image
@@ -244,7 +244,7 @@ export default function LyttleDevelopmentSignature() {
                 <Switch.Thumb className="block w-5 h-5 bg-white rounded-full transition-transform translate-x-0.5 data-[state=checked]:translate-x-[22px]" />
               </Switch.Root>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <label htmlFor="notes" className="text-sm font-medium">
                 Include Default Text
@@ -258,7 +258,7 @@ export default function LyttleDevelopmentSignature() {
                 <Switch.Thumb className="block w-5 h-5 bg-white rounded-full transition-transform translate-x-0.5 data-[state=checked]:translate-x-[22px]" />
               </Switch.Root>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <label htmlFor="branding" className="text-sm font-medium">
                 Show Branding
@@ -274,7 +274,7 @@ export default function LyttleDevelopmentSignature() {
             </div>
           </div>
         </div>
-        
+
         <div>
           <h2 className="text-xl font-semibold mb-4">Preview</h2>
           <div className={styles.signature_container}>
@@ -290,7 +290,7 @@ export default function LyttleDevelopmentSignature() {
               </p>
             )}
           </div>
-          
+
           <CopyBox
             signatureHtml={buildSignatureHtml()}
             onCopy={() => {

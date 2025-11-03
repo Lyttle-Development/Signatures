@@ -4,10 +4,10 @@ import { Container } from "@/components/Container";
 export default function Home() {
   const signatures = [
     {
-      id: "ld",
+      id: "lyttledevelopment",
       name: "Lyttle Development",
       description: "Professional email signature for Lyttle Development team members",
-      href: "/signatures/ld",
+      href: "/signatures/lyttledevelopment",
       color: "from-indigo-500 to-purple-600",
     },
     {

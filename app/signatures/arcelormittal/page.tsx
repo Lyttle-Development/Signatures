@@ -25,10 +25,7 @@ export default function ArcelorMittalSignature() {
 
   const [options, setOptions] = useState({
     showNotes: true,
-    removeBackground: true,
   });
-
-  const [originalImage, setOriginalImage] = useState<string>("");
 
   useEffect(() => {
     fetch("/images/arcelormittal-logo.png")
@@ -114,7 +111,6 @@ export default function ArcelorMittalSignature() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const dataUrl = reader.result as string;
-      setOriginalImage(dataUrl);
       if (!data.gradient) {
         alert("Gradient image is not loaded yet. Please try again later.");
         return;
@@ -123,7 +119,7 @@ export default function ArcelorMittalSignature() {
         const combinedUrl = await combineImagesWithGradient(
           data.gradient,
           dataUrl,
-          options.removeBackground
+          false // Always use false since we're removing the background removal feature
         );
         set("image", combinedUrl);
       } catch (error) {
@@ -133,21 +129,6 @@ export default function ArcelorMittalSignature() {
     };
     reader.readAsDataURL(file);
   };
-
-  // Re-process image when removeBackground option changes
-  useEffect(() => {
-    if (originalImage && data.gradient) {
-      combineImagesWithGradient(
-        data.gradient,
-        originalImage,
-        options.removeBackground
-      ).then(combinedUrl => {
-        set("image", combinedUrl);
-      }).catch(error => {
-        console.error("Error reprocessing image:", error);
-      });
-    }
-  }, [options.removeBackground, originalImage, data.gradient]);
 
   const buildSignatureHtml = () => {
     return `${options.showNotes ? `<p style="color:#0C0C0C;font-family:Arial;font-size:12px;line-height:130%">
@@ -247,20 +228,6 @@ export default function ArcelorMittalSignature() {
           
           <div className="mt-6 space-y-4">
             <h3 className="text-lg font-semibold">Options</h3>
-            
-            <div className="flex items-center justify-between">
-              <label htmlFor="removeBackground" className="text-sm font-medium">
-                Remove Background from Image
-              </label>
-              <Switch.Root
-                id="removeBackground"
-                checked={options.removeBackground}
-                onCheckedChange={(checked) => setOptions(prev => ({ ...prev, removeBackground: checked }))}
-                className="w-11 h-6 bg-gray-300 rounded-full relative data-[state=checked]:bg-indigo-600 transition-colors"
-              >
-                <Switch.Thumb className="block w-5 h-5 bg-white rounded-full transition-transform translate-x-0.5 data-[state=checked]:translate-x-[22px]" />
-              </Switch.Root>
-            </div>
             
             <div className="flex items-center justify-between">
               <label htmlFor="notes" className="text-sm font-medium">

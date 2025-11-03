@@ -35,30 +35,23 @@ body {
   padding: 1rem;
   border: 2px dashed #d1d5db;
   border-radius: 0.5rem;
-  cursor: pointer;
   position: relative;
-  transition: all 0.2s;
   overflow: auto;
   max-height: 600px;
 }
 
-.signature-container:hover {
-  background-color: rgba(99, 102, 241, 0.05);
-  border-color: #6366f1;
+/* Ensure signature preview content is contained and properly scaled */
+.signature-preview {
+  width: 100%;
+  overflow: hidden;
 }
 
-.signature-container.copying {
-  background-color: rgba(34, 197, 94, 0.1);
-  border-color: #22c55e;
-}
-
-/* Ensure signature preview content is contained */
 .signature-preview table {
-  max-width: 100%;
-  table-layout: auto;
+  width: 100%;
+  table-layout: fixed;
 }
 
+/* Preserve original image dimensions */
 .signature-preview img {
-  max-width: 100%;
-  height: auto;
+  display: block;
 }

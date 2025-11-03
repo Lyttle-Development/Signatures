@@ -14,7 +14,7 @@ RUN npm ci
 RUN npm run docker:setup
 
 # Expose the port the app runs on
-EXPOSE 1111
+EXPOSE 3000
 
 # Command to run your application
 CMD ["npm", "start"]

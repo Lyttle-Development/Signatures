@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 interface CopyBoxProps {
   signatureHtml: string;
-  onCopy: () => void;
+  onCopy?: () => void;
   disabled?: boolean;
 }
 
@@ -28,10 +28,10 @@ export function CopyBox({ signatureHtml, onCopy, disabled = false }: CopyBoxProp
           "text/plain": new Blob([""], { type: "text/plain" }),
         }),
       ]);
-      
+
       setCopied(true);
-      onCopy();
-      
+      if (onCopy) onCopy();
+
       setTimeout(() => {
         setCopied(false);
       }, 2000);
@@ -56,7 +56,7 @@ export function CopyBox({ signatureHtml, onCopy, disabled = false }: CopyBoxProp
       >
         {copied ? "✓ Copied!" : "Copy Signature to Clipboard"}
       </button>
-      
+
       <details className="text-sm">
         <summary className="cursor-pointer text-gray-600 hover:text-gray-800">
           View HTML Source

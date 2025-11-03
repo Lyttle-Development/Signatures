@@ -342,9 +342,6 @@ export default function LyttleDevelopmentSignature() {
 
           <CopyBox
             signatureHtml={buildSignatureHtml()}
-            onCopy={() => {
-              alert("Signature copied to clipboard!");
-            }}
             disabled={!isValid() || !data.image}
           />
         </div>

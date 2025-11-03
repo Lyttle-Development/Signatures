@@ -313,9 +313,6 @@ export default function ArcelorMittalSignature() {
 
           <CopyBox
             signatureHtml={buildSignatureHtml()}
-            onCopy={() => {
-              alert("Signature copied to clipboard!");
-            }}
             disabled={!isValid() || !data.image}
           />
         </div>
